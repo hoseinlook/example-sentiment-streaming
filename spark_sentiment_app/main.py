@@ -3,6 +3,7 @@ from pyspark.sql import SparkSession
 from pyspark.sql.types import StructType, StructField, StringType, IntegerType
 
 from spark_sentiment_app.config import DEBUG, MONGODB_URI, KAFKA_CONFIG_READ, SPARK_CHECKPOINT_LOCATION
+from spark_sentiment_app.sentiment_transformer import sentiment_calculate_udf
 
 """
 ./bin/pyspark --conf "spark.mongodb.read.connection.uri=mongodb://127.0.0.1/test.myCollection?readPreference=primaryPreferred" \
@@ -30,7 +31,8 @@ else:
 schema = StructType([
     StructField("Name", StringType(), True),
     StructField("Age", IntegerType(), True),
-    StructField("City", StringType(), True)
+    StructField("City", StringType(), True),
+    StructField("text", StringType(), True),
 ])
 
 # ReadStream from kafka
@@ -38,10 +40,13 @@ df = spark.readStream.format('kafka').options(**KAFKA_CONFIG_READ).load()
 df = df.withColumn("data", f.from_json(f.col("value").cast("string"), schema=schema))
 df = df.select("data.*")
 
+TEXT_FIELD = "text"
+
+df = df.withColumn("sentiment_result", sentiment_calculate_udf(TEXT_FIELD))
 # WriteStream to mongodb
-query_mongo = df.writeStream.format("mongodb") \
+query_mongo = df.writeStream.format("console") \
     .outputMode("append") \
-    .option("checkpointLocation", SPARK_CHECKPOINT_LOCATION) \
+    .option("checkpointLocation", "/tmp/spark_shit") \
     .trigger(processingTime="1 seconds").start()
 
 query_mongo.awaitTermination()

@@ -1,6 +1,7 @@
 from pyspark.sql import SparkSession
 
 from pyspark.sql import SparkSession
+import  pyspark.sql.functions as f
 
 from spark_sentiment_app.config import MONGODB_URI
 from spark_sentiment_app.sentiment_transformer import sentiment_calculate_udf
@@ -21,9 +22,10 @@ spark = SparkSession.builder \
     .config("spark.jars.packages", "org.apache.spark:spark-sql-kafka-0-10_2.12:3.1.1,org.mongodb.spark:mongo-spark-connector_2.12:10.2.2") \
     .config("spark.mongodb.read.connection.uri", MONGODB_URI) \
     .config("spark.mongodb.write.connection.uri", MONGODB_URI) \
+    .config("spark.sql.execution.arrow.pyspark.enabled", "true") \
     .getOrCreate()
 
 df = spark.read.json("./example_data.json")
-
+df.show()
 df = df.withColumn("sentiment_result", sentiment_calculate_udf("_id"))
 df.show()
