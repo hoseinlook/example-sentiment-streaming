@@ -1,0 +1,79 @@
+version: '3.6'
+services:
+
+  zookeeper:
+    image: registry.docker.ir/bitnami/zookeeper:latest
+    restart: on-failure
+    ports:
+      - "2181:2181"
+    volumes:
+      - "./storage/zookeeper_data:/bitnami"
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+    networks:
+      - localnet
+
+  kafka-broker:
+    image: registry.docker.ir/bitnami/kafka:latest
+    restart: on-failure
+    ports:
+      - "9092:9092"
+      - "9093:9093"
+    volumes:
+      - "./storage/kafka_data:/bitnami"
+    networks:
+      - localnet
+    env_file:
+      - .env
+    environment:
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CLIENT:PLAINTEXT,EXTERNAL:PLAINTEXT
+      - KAFKA_CFG_LISTENERS=CLIENT://:9092,EXTERNAL://:9093
+      - KAFKA_CFG_ADVERTISED_LISTENERS=CLIENT://kafka-broker:9092,EXTERNAL://localhost:9093
+      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=CLIENT
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_CLIENT_USERS=${KAFKA_USERNAME}
+      - KAFKA_CLIENT_PASSWORDS=${KAFKA_PASSWORD}
+      - ALLOW_ANONYMOUS_LOGIN=yes
+      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
+    depends_on:
+      - zookeeper
+
+
+  schema-registry:
+    image: registry.docker.ir/confluentinc/cp-schema-registry:5.3.0
+    hostname: schema-registry
+    container_name: schema-registry
+    depends_on:
+      - zookeeper
+      - kafka-broker
+    ports:
+      - "8081:8081"
+    networks:
+      - localnet
+    environment:
+      SCHEMA_REGISTRY_HOST_NAME: schema-registry
+      SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: 'zookeeper:2181'
+
+  mongodb_container:
+    image: registry.docker.ir/mongo:4.4.15
+    #    environment:
+    #      MONGO_INITDB_DATABASE: test
+    #      MONGO_INITDB_ROOT_USERNAME: admin
+    #      MONGO_INITDB_ROOT_PASSWORD: admin
+    ports:
+      - 27017:27017
+    volumes:
+      - ./storage/mongodb:/data
+    networks:
+      - localnet
+
+
+networks:
+  localnet:
+
+volumes:
+  rs1:
+  rs2:
+  rs3:
+
