@@ -16,4 +16,13 @@ sudo docker-compose up
 ```
 
 
+# Initial
+To write new data to kafka use `producer.py`
+
+
+# Improvement
+To improve code and structure there are some advice:
++ To define schema instead of hard coding we can use schema registry connection
++ To deploy spark we can use spark on kuber(to have a better isolation) or spark on yarn (to have better data locality)
++ 
 
