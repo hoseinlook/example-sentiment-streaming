@@ -25,6 +25,7 @@ spark = SparkSession.builder \
     .config("spark.executor.extraJavaOptions", "-Dio.netty.tryReflectionSetAccessible=true") \
     .getOrCreate()
 
+print(spark)
 df = spark.read.format("mongodb").load()
 df.show()
 

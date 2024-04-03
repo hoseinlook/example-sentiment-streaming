@@ -4,6 +4,7 @@ It is a simple spark streaming application to process some data using a simple s
 
 # How To Deploy With Docker
 To install and deploy, we have provided a `docker-compose.yaml` that contains services such as kafka,mongodb and spark.
+Also, to run in local you should consider the python version must be 3.8
 ### Note
 Please consider that you should create a `.env` file, you can use `.env.example` file as an example.
 ```bash
@@ -26,3 +27,5 @@ To improve code and structure there are some advice:
 + To deploy spark we can use spark on kuber(to have a better isolation) or spark on yarn (to have better data locality)
 + 
 
+# Note
++ Latest mongodb-spark-connector supports spark 3.2.4
