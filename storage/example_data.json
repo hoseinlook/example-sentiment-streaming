@@ -1,6 +1,0 @@
-[
-  {"_id": "1", "Name": "name1", "Age": 10, "City": "London" ,"text": "i am angry"},
-  {"_id": "2", "Name": "name2", "Age": 10, "City": "Newbury","text": "i am a good person" },
-  {"_id": "3", "Name": "name3", "Age": 10, "City": "Somewhere1","text": "i am a bad person" },
-  {"_id": "4", "Name": "name4", "Age": 10, "City": "Somewhere2","text": "i am a normal person"}
-]
