@@ -34,3 +34,4 @@ To improve code and structure there are some advice:
 
 # Note
 + Latest mongodb-spark-connector supports spark 3.2.4
++ Java version must be 8 or 11

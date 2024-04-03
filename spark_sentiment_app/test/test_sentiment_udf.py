@@ -1,3 +1,5 @@
+import os
+
 from pyspark.sql import SparkSession
 
 from spark_sentiment_app.config import MONGODB_URI
@@ -12,17 +14,15 @@ from spark_sentiment_app.sentiment_transformer import sentiment_calculate_udf
 """
 Create Spark Session
 """
-
+print(os.getenv("JAVA_HOME"))
 spark = SparkSession.builder \
     .master("local[*]") \
     .config("spark.app.name", "sentiment") \
-    .config("spark.jars.packages", "org.apache.spark:spark-sql-kafka-0-10_2.12:3.3.1,org.mongodb.spark:mongo-spark-connector_2.12:10.2.2") \
+    .config("spark.jars.packages", "org.apache.spark:spark-sql-kafka-0-10_2.12:3.2.4,org.mongodb.spark:mongo-spark-connector_2.12:10.2.2") \
     .config("spark.mongodb.read.connection.uri", MONGODB_URI) \
     .config("spark.mongodb.write.connection.uri", MONGODB_URI) \
     .config("spark.sql.execution.arrow.pyspark.enabled", "true") \
     .config("spark.sql.execution.arrow.pyspark.fallback.enabled", "true") \
-    .config("spark.driver.extraJavaOptions", "-Dio.netty.tryReflectionSetAccessible=true") \
-    .config("spark.executor.extraJavaOptions", "-Dio.netty.tryReflectionSetAccessible=true") \
     .getOrCreate()
 
 print(spark)
