@@ -19,9 +19,10 @@ if DEBUG:
     spark = SparkSession.builder \
         .master("local[*]") \
         .config("spark.app.name", "sentiment") \
-        .config("spark.jars.packages", "org.apache.spark:spark-sql-kafka-0-10_2.12:3.1.1,org.mongodb.spark:mongo-spark-connector_2.12:10.2.2") \
+        .config("spark.jars.packages", "org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.1,org.mongodb.spark:mongo-spark-connector_2.12:10.2.1") \
         .config("spark.mongodb.read.connection.uri", MONGODB_URI) \
         .config("spark.mongodb.write.connection.uri", MONGODB_URI) \
+        .config("spark.sql.execution.arrow.pyspark.enabled", "true") \
         .getOrCreate()
 
 else:
@@ -44,9 +45,9 @@ TEXT_FIELD = "text"
 
 df = df.withColumn("sentiment_result", sentiment_calculate_udf(TEXT_FIELD))
 # WriteStream to mongodb
-query_mongo = df.writeStream.format("console") \
+query_mongo = df.writeStream.format("mongodb") \
     .outputMode("append") \
-    .option("checkpointLocation", "/tmp/spark_shit") \
+    .option("checkpointLocation", SPARK_CHECKPOINT_LOCATION) \
     .trigger(processingTime="1 seconds").start()
 
 query_mongo.awaitTermination()
