@@ -20,6 +20,11 @@ sudo docker-compose up
 # Initial
 To write new data to kafka use `producer.py`
 
+# Run
+```bash
+python3 spark_sentiment_app/main.py
+```
+
 
 # Improvement
 To improve code and structure there are some advice:
