@@ -26,10 +26,11 @@ spark = SparkSession.builder \
     .getOrCreate()
 
 print(spark)
-df = spark.read.format("mongodb").load()
-df.show()
+# df = spark.read.format("mongodb").load()
+# df.show()
 
 df = spark.read.json("./example_data.json")
-df.show()
+df.printSchema()
 df = df.withColumn("sentiment_result", sentiment_calculate_udf("_id"))
+df.printSchema()
 df.show()
