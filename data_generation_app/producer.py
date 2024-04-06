@@ -24,18 +24,7 @@ class Producer:
         for record in data:
             print("inserting record id", record["id"], '& text:', '"', record['text'], '"')
             self._producer.send(topic="mongodata", value=record)
-        # while not self.stop_event.is_set():
-        #     last_query_time = 0
-        #     while True:
-        #         now = time.time()
-        #         cursor = mydb.geodb.find({'date': {'$gt': last_query_time}})
-        #         last_query_time = now
-        #         for document in cursor:
-        #             print(document)
-        #             document['_id'] = str(document['_id'])
-        #             producer.send(Topic, document)
-        #             time.sleep(1)
-        #         time.sleep(1)
+
         self._producer.close()
 
 
