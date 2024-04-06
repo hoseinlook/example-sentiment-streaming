@@ -7,7 +7,7 @@ services:
     ports:
       - "2181:2181"
     volumes:
-      - "./storage/zookeeper_data:/bitnami"
+      - "zookeeper:/bitnami"
     environment:
       - ALLOW_ANONYMOUS_LOGIN=yes
     networks:
@@ -20,7 +20,7 @@ services:
       - "9092:9092"
       - "9093:9093"
     volumes:
-      - "./storage/kafka_data:/bitnami"
+      - "broker:/bitnami"
     networks:
       - localnet
     env_file:
@@ -73,7 +73,7 @@ networks:
   localnet:
 
 volumes:
-  rs1:
-  rs2:
-  rs3:
+  broker:
+  zookeeper:
+  mongodb:
 
