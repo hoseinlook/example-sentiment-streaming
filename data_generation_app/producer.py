@@ -5,19 +5,16 @@ import time
 from kafka import KafkaAdminClient, KafkaProducer
 from kafka.admin import NewTopic
 
+BOOTSTRAP_SERVERS = 'localhost:9092'
 
-class Producer(threading.Thread):
+
+class Producer:
+
     def __init__(self):
-        threading.Thread.__init__(self)
-        self.stop_event = threading.Event()
-
-    def stop(self):
-        self.stop_event.set()
+        self._producer = KafkaProducer(bootstrap_servers=BOOTSTRAP_SERVERS,
+                                       value_serializer=lambda v: json.dumps(v).encode('utf-8'))
 
     def run(self):
-        producer = KafkaProducer(bootstrap_servers='localhost:9092',
-                                 value_serializer=lambda v: json.dumps(v).encode('utf-8'))
-
         with open("example_data.json") as file:
             data = file.read()
             print(data)
@@ -26,7 +23,7 @@ class Producer(threading.Thread):
 
         for record in data:
             print("inserting record id", record["id"], '& text:', '"', record['text'], '"')
-            producer.send(topic="mongodata", value=record)
+            self._producer.send(topic="mongodata", value=record)
         # while not self.stop_event.is_set():
         #     last_query_time = 0
         #     while True:
@@ -39,35 +36,23 @@ class Producer(threading.Thread):
         #             producer.send(Topic, document)
         #             time.sleep(1)
         #         time.sleep(1)
-        producer.close()
+        self._producer.close()
 
 
 def main():
+    new_topic = "mongodata"
     # Create 'my-topic' Kafka topic
-    try:
-        admin = KafkaAdminClient(bootstrap_servers='localhost:9092')
 
-        topic = NewTopic(name="mongodata",
-                         num_partitions=1,
-                         replication_factor=1)
-        admin.create_topics([topic])
-    except Exception:
-        pass
+    admin = KafkaAdminClient(bootstrap_servers=BOOTSTRAP_SERVERS)
 
-    tasks = [
-        Producer(),
-    ]
+    topic = NewTopic(name=new_topic,
+                     num_partitions=1,
+                     replication_factor=1)
+    print(admin.list_topics())
+    if new_topic not in admin.list_topics():
+        admin.create_topics([topic], )
 
-    # Start threads of a publisher/producer and a subscriber/consumer to 'my-topic' Kafka topic
-    for t in tasks:
-        t.start()
-
-    time.sleep(3)
-    # Stop threads
-    for task in tasks:
-        task.stop()
-    for task in tasks:
-        task.join()
+    Producer().run()
 
 
 if __name__ == "__main__":
