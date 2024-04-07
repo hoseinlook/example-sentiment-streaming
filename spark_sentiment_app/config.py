@@ -20,7 +20,7 @@ MONGODB_URI = F'mongodb://{os.getenv("MONGODB_HOST")}:{os.getenv("MONGODB_PORT")
 KAFKA_HOST = os.getenv("KAFKA_HOST", "localhost")
 TOPIC_NAME = "mongodata"
 KAFKA_CONFIG_READ = {
-    'kafka.bootstrap.servers': f'{KAFKA_HOST}:9092',
+    'kafka.bootstrap.servers': f'{KAFKA_HOST}:9093',
     'subscribe': TOPIC_NAME,
     'groupIdPrefix': "spark_app",
     'maxOffsetsPerTrigger': 10,

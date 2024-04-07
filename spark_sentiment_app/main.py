@@ -45,7 +45,7 @@ TEXT_FIELD = "text"
 
 df = df.withColumn("sentiment_result", sentiment_calculate_udf(TEXT_FIELD))
 # WriteStream to mongodb
-query_mongo = df.writeStream.format("mongodb") \
+query_mongo = df.writeStream.format("console") \
     .outputMode("append") \
     .option("checkpointLocation", SPARK_CHECKPOINT_LOCATION) \
     .trigger(processingTime="1 seconds").start()
