@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-FROM python:3.8-bullseye as build-stage
+FROM registry.docker.ir/python:3.8-bullseye as build-stage
 
 COPY requirements.txt requirements.txt
 ARG PIP_CACHE_DIR=/tmp/pip-cache
@@ -25,7 +25,7 @@ RUN --mount=type=cache,target=${PIP_CACHE_DIR} \
 
 
 
-FROM ubuntu:jammy
+FROM registry.docker.ir/ubuntu:jammy
 
 # Switch to user root so we can add additional jars and configuration files.
 USER root
