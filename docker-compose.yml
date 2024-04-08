@@ -1,5 +1,66 @@
 version: '3.6'
 services:
+  spark-master:
+    hostname: spark-master
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - "8080:8080"
+      - "7077:7077"
+    environment:
+      - SPARK_LOCAL_IP=spark-master
+      - SPARK_WORKLOAD=master
+      - KAFKA_HOST=kafka-broker
+
+    networks:
+      - localnet
+
+  spark-worker-a:
+    hostname: spark-worker-a
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - "8081:8080"
+      - "7001:7000"
+    depends_on:
+      - spark-master
+    environment:
+      - SPARK_MASTER=spark://spark-master:7077
+      - SPARK_WORKER_CORES=3
+      - SPARK_WORKER_MEMORY=6G
+      - SPARK_DRIVER_MEMORY=3G
+      - SPARK_EXECUTOR_MEMORY=3G
+      - SPARK_WORKLOAD=worker
+      - SPARK_LOCAL_IP=spark-worker-a
+      - KAFKA_HOST=kafka-broker
+    networks:
+      - localnet
+
+
+  spark-worker-b:
+    hostname: spark-worker-b
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - "8082:8080"
+      - "7002:7000"
+    depends_on:
+      - spark-master
+    environment:
+      - SPARK_MASTER=spark://spark-master:7077
+      - SPARK_WORKER_CORES=3
+      - SPARK_WORKER_MEMORY=6G
+      - SPARK_DRIVER_MEMORY=3G
+      - SPARK_EXECUTOR_MEMORY=3G
+      - SPARK_WORKLOAD=worker
+      - SPARK_LOCAL_IP=spark-worker-b
+      - KAFKA_HOST=kafka-broker
+    networks:
+      - localnet
+
 
   zookeeper:
     image: registry.docker.ir/bitnami/zookeeper:latest
@@ -40,20 +101,20 @@ services:
       - zookeeper
 
 
-  schema-registry:
-    image: registry.docker.ir/confluentinc/cp-schema-registry:5.3.0
-    hostname: schema-registry
-    container_name: schema-registry
-    depends_on:
-      - zookeeper
-      - kafka-broker
-    ports:
-      - "8081:8081"
-    networks:
-      - localnet
-    environment:
-      SCHEMA_REGISTRY_HOST_NAME: schema-registry
-      SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: 'zookeeper:2181'
+#  schema-registry:
+#    image: registry.docker.ir/confluentinc/cp-schema-registry:5.3.0
+#    hostname: schema-registry
+#    container_name: schema-registry
+#    depends_on:
+#      - zookeeper
+#      - kafka-broker
+#    ports:
+#      - "8081:8081"
+#    networks:
+#      - localnet
+#    environment:
+#      SCHEMA_REGISTRY_HOST_NAME: schema-registry
+#      SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: 'zookeeper:2181'
 
   mongodb_container:
     image: registry.docker.ir/mongo:4.4.15
@@ -76,4 +137,5 @@ volumes:
   broker:
   zookeeper:
   mongodb:
+  spark:
 

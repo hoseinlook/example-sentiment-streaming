@@ -16,6 +16,14 @@ To deploy use this command:
 sudo docker-compose up
 ```
 
+# Submit an application to run
+```bash
+cd spark_sentiment_app/
+zip -r your_project.zip .
+cd ../
+spark-submit --master spark://localhost:7077  --packages org.mongodb.spark:mongo-spark-connector_2.12:10.2.2,org.apache.spark:spark-sql-kafka-0-10_2.12:3.2.4   --py-files spark_sentiment_app/your_project.zip   spark_sentiment_app/main.py
+
+```
 
 # Initial
 To write new data to kafka use `producer.py`

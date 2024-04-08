@@ -2,8 +2,8 @@ import pyspark.sql.functions as f
 from pyspark.sql import SparkSession
 from pyspark.sql.types import StructType, StructField, StringType, IntegerType
 
-from spark_sentiment_app.config import DEBUG, MONGODB_URI, KAFKA_CONFIG_READ, SPARK_CHECKPOINT_LOCATION
-from spark_sentiment_app.sentiment_transformer import sentiment_calculate_udf
+from config import DEBUG, MONGODB_URI, KAFKA_CONFIG_READ, SPARK_CHECKPOINT_LOCATION
+from sentiment_transformer import sentiment_calculate_udf
 
 """
 ./bin/pyspark --conf "spark.mongodb.read.connection.uri=mongodb://127.0.0.1/test.myCollection?readPreference=primaryPreferred" \
