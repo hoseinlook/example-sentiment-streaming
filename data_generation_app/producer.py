@@ -5,7 +5,7 @@ import time
 from kafka import KafkaAdminClient, KafkaProducer
 from kafka.admin import NewTopic
 
-BOOTSTRAP_SERVERS = 'localhost:9092'
+BOOTSTRAP_SERVERS = 'localhost:9093'
 
 
 class Producer:

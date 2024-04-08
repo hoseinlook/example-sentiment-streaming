@@ -24,7 +24,7 @@ if DEBUG:
         .config("spark.mongodb.write.connection.uri", MONGODB_URI) \
         .config("spark.sql.execution.arrow.pyspark.enabled", "true") \
         .getOrCreate()
-
+    print(MONGODB_URI)
 else:
     spark = SparkSession.builder.getOrCreate()
 
@@ -45,7 +45,7 @@ TEXT_FIELD = "text"
 
 df = df.withColumn("sentiment_result", sentiment_calculate_udf(TEXT_FIELD))
 # WriteStream to mongodb
-query_mongo = df.writeStream.format("console") \
+query_mongo = df.writeStream.format("mongodb") \
     .outputMode("append") \
     .option("checkpointLocation", SPARK_CHECKPOINT_LOCATION) \
     .trigger(processingTime="1 seconds").start()
