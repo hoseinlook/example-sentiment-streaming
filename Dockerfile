@@ -83,10 +83,6 @@ RUN echo "" > /tmp/java_opts.txt
 RUN chmod 777 -R /tmp
 
 RUN mkdir -p /etc/metrics/conf
-# COPY conf/metrics.properties /etc/metrics/conf
-# COPY conf/prometheus.yaml /etc/metrics/conf
-COPY entrypoint.sh /opt/entrypoint.sh
-RUN chmod 777 /opt/entrypoint.sh
 
 RUN chmod 777 -R /tmp
 RUN addgroup --gid 5000 hdfs
