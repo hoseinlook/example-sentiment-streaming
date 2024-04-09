@@ -106,6 +106,8 @@ RUN apt-get update \
 
 COPY requirements.txt /tmp/requirements.txt
 ARG PIP_CACHE_DIR=/tmp/pip-cache
+RUN #apt-get install --yes --no-install-recommends build-essential
+RUN pip install -U pip setuptools
 RUN --mount=type=cache,target=${PIP_CACHE_DIR} \
     --mount=type=cache,from=build-stage,source=/tmp/wheels,target=/tmp/wheels \
     pip install \
