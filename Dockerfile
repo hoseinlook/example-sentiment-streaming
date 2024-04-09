@@ -25,7 +25,7 @@ RUN --mount=type=cache,target=${PIP_CACHE_DIR} \
 
 
 
-FROM registry.docker.ir/ubuntu:jammy
+FROM registry.docker.ir/ubuntu:focal
 
 # Switch to user root so we can add additional jars and configuration files.
 USER root
