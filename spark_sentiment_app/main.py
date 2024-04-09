@@ -17,7 +17,6 @@ Create Spark Session
 if DEBUG:
 
     spark = SparkSession.builder \
-        .master("local[*]") \
         .config("spark.app.name", "sentiment") \
         .config("spark.jars.packages", "org.apache.spark:spark-sql-kafka-0-10_2.12:3.2.4,org.mongodb.spark:mongo-spark-connector_2.12:10.2.1") \
         .config("spark.mongodb.read.connection.uri", MONGODB_URI) \
